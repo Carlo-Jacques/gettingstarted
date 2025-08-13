@@ -30,18 +30,19 @@
 
 <body>
     <div>
-      <?php
-$directory = ".";
-$files = scandir($directory);
-echo "<h1>Directory: $directory</h1>";
-echo "<ul>";
-foreach ($files as $file) {
-    if ($file != "." && $file != "..") {
-        echo "<li>$file</li>";
-    }
-}
-echo "</ul>";
-?>
+      <!-- Directory Listing -->
+        <h1>Directory: {{ directory_path }}</h1>
+        <ul>
+            {% for dir in dirs %}
+                <li>Directory: {{ dir }}</li>
+            {% endfor %}
+            {% for file in files %}
+                <li>File: {{ file }}</li>
+            {% endfor %}
+            {% if not dirs and not files %}
+                <li>No files or directories found</li>
+            {% endif %}
+        </ul>
   <div class="container mt-5">
     <!-- Progress Bar -->
     <ul id="progressbar" class="d-flex justify-content-between">
