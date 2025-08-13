@@ -1,60 +1,95 @@
-{% extends "base.html" %}
+{% load django_browser_reload %}
 {% load static %}
 
-{% block content %}
+<!doctype html>
+<html lang="en">
 
-<div class="jumbotron text-center">
-  <div class="container">
-    <a href="/" class="lang-logo">
-      <img src="{% static 'lang-logo.png'%}">
-    </a>
-    <h1>Getting Started with Python on Heroku</h1>
-    <p>This is a sample Python application deployed to Heroku. It's a reasonably simple app - but a good foundation for understanding how to get the most out of the Heroku platform.</p>
-    <a type="button" class="btn btn-lg btn-default" href="https://devcenter.heroku.com/articles/getting-started-with-python"><span class="glyphicon glyphicon-flash"></span> Getting Started on Heroku with Python</a>
-    <a type="button" class="btn btn-lg btn-default" href="https://devcenter.heroku.com/articles/getting-started-with-python-fir"><span class="glyphicon glyphicon-flash"></span> Getting Started on Heroku Fir with Python</a>
-    <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/python-getting-started"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
-  </div>
-</div>
-<div class="container">
-  <div class="lead">
-    To deploy your own copy, and learn the fundamentals of the Heroku platform, head over to either of the following tutorials:
-    <ul>
-      <li><a href="https://devcenter.heroku.com/articles/getting-started-with-python" class="alert-link">Getting Started on Heroku with Python</a></li>
-      <li><a href="https://devcenter.heroku.com/articles/getting-started-with-python-fir" class="alert-link">Getting Started on Heroku Fir with Python</a></li>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="GitHub Codespaces ♥️ Django">
+    <meta name="author" content="GitHub Codespaces">
+    <meta name="generator" content="GitHub Codespaces">
+    <meta name="theme-color" content="#000000">
+    <title>{% block title %}{{ title }} | GitHub Codespaces ♥️ Django{% endblock %}</title>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/hello_world/style/style.scss">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FontAwesome & Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Correct order -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     
+</head>
+
+<body>
+    <div>
+  <div class="container mt-5">
+    <!-- Progress Bar -->
+    <ul id="progressbar" class="d-flex justify-content-between">
+      <li class="active" id="step1Indicator">Select Form</li>
+      <li id="step2Indicator">Personal Info</li>
+      <li id="step3Indicator">Form Specific</li>
+      <li id="step4Indicator">Review</li>
     </ul>
+
+    <!-- Step 1: Form Selection -->
+    <form id="formSelection" novalidate>
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Form Builder</h3>
+          <div class="form-group">
+            <div class="form-check form-option">
+                <fieldset>
+                  <legend>Select the forms you want</legend>
+                    <div id="formAlert" class="form-alert hidden">Please select at least one form.</div>
+                    
+                    
+                  <label class="chip-wrapper">
+                    <input type="checkbox" name="document_types" value="poa" class="chip">
+                    <span class="chip-label">Power of Attorney</span>
+                  </label>
+
+                  <label class="chip-wrapper">
+                    <input type="checkbox" name="document_types" value="will" class="chip">
+                    <span class="chip-label">Last Will and Testament</span>
+                  </label>
+
+                  <label class="chip-wrapper">
+                    <input type="checkbox" name="document_types" value="living" class="chip">
+                    <span class="chip-label">Living Will</span>
+                  </label>
+                </fieldset>
+                <div id="agent-question" style="display:none;">
+                  <p>Use the same agent for both forms?</p>
+                  <label><input type="radio" name="sameAgent" value=true required> Yes</label>
+                  <label><input type="radio" name="sameAgent" value=false required> No</label>
+                </div>
+                <label>Signing date: <input type="date" name="date" /></label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-submit" disabled >Start forms</button>
+          </div>
+      </div>
+    </form>
+
+    <!-- Step 2+: Dynamic Inputs -->
+    <form id="dynamicForm" style="display:none;"></form>
+
+    <!-- Results -->
+    <div id="result" class="mt-4"></div>
   </div>
-  <hr />
-  <div class="row">
-    <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-info-sign"></span> How this sample app works</h3>
-      <ul>
-        <li>This app was deployed to Heroku using Git.</li>
-        <li>When Heroku received the source code, it fetched all the dependencies in <a href="https://github.com/heroku/python-getting-started/blob/main/requirements.txt">requirements.txt</a>, creating a deployable build artifact.</li>
-        <li>The platform then spins up a dyno, a lightweight container that provides an isolated environment in which the build artifact can be mounted and executed.</li>
-        <li>You can scale your app, manage it, and deploy over <a href="https://addons.heroku.com/">150 add-on services</a>, from the Dashboard or CLI.</li>
-      </ul>
     </div>
-    <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-link"></span> Next Steps</h3>
-      <ul>
-        <li>If you are following the <a href="https://devcenter.heroku.com/articles/getting-started-with-python">Getting Started on Heroku with Python</a> or <a href="https://devcenter.heroku.com/articles/getting-started-with-python-fir">Getting Started on Heroku Fir with Python</a> guide, then please head back to the tutorial and follow the next steps!</li>
-      </ul>
-      <h3><span class="glyphicon glyphicon-link"></span> Helpful Links</h3>
-      <ul>
-        <li><a href="https://www.heroku.com/home">Heroku</a></li>
-        <li><a href="https://devcenter.heroku.com/">Heroku Dev Center</a></li>
-        <li><a href="https://devcenter.heroku.com/articles/getting-started-with-python">Getting Started on Heroku with Python</a></li>
-        <li><a href="https://devcenter.heroku.com/articles/getting-started-with-python-fir">Getting Started on Heroku Fir with Python</a></li>
-        <li><a href="https://devcenter.heroku.com/categories/python">Python articles on the Heroku Dev Center</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="row" style="margin-top:1em">
-    <div class="col-md-12">
-      <p class="alert alert-info" role="alert">
-        Please do work through the Getting Started guide, even if you do know how to build such an application. The guide covers the basics of working with Heroku, and will familiarize you with all the concepts you need in order to build and deploy your own apps.
-      </p>
-    </div>
-  </div>
-</div>
-{% endblock %}
+
+    <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/static/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</body>
+
+</html>
