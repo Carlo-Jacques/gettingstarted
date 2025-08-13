@@ -30,7 +30,7 @@ def db(request):
 import os
 from django.shortcuts import render
 
-def directory_view(request):
+def index(request):
     # Specify the directory path (e.g., current directory or a specific path)
     directory_path = '.'  # Current directory; replace with desired path, e.g., 'static'
     try:
@@ -50,5 +50,5 @@ def directory_view(request):
         'files': files_only,
         'dirs': dirs_only,
     }
-    return render(request, 'form_filler/index.html', context)
+    return render(request, 'index.html', context)
 
