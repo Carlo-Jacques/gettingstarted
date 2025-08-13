@@ -1,5 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,90 +13,87 @@
     <meta name="author" content="GitHub Codespaces">
     <meta name="generator" content="GitHub Codespaces">
     <meta name="theme-color" content="#000000">
-    <title>{{ title|default:"Directory Listing" }} | GitHub Codespaces ♥️ Django</title>
+    <title>{% block title %}{{ title }} | GitHub Codespaces ♥️ Django{% endblock %}</title>
     
-    <!-- Static CSS (compiled from SCSS) -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+    <link rel="stylesheet" href="/gettingstarted/static/css/style.css">
+    <link rel="stylesheet" href="/hello/style/style.scss">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- FontAwesome & Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Correct order -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     
 </head>
+
 <body>
     <div>
-        <!-- Directory Listing -->
-        <h1>Directory: {{ directory_path }}</h1>
-        {% if error_message %}
-            <p>Error: {{ error_message }}</p>
-        {% else %}
-            <h2>Directories</h2>
-            <ul>
-                {% for dir in dirs %}
-                    <li>Directory: {{ dir }}</li>
-                {% endfor %}
-                {% if not dirs %}
-                    <li>No directories found</li>
-                {% endif %}
-            </ul>
-            <h2>Files</h2>
-            <ul>
-                {% for file in files %}
-                    <li>File: {{ file }}</li>
-                {% endfor %}
-                {% if not files %}
-                    <li>No files found</li>
-                {% endif %}
-            </ul>
-        {% endif %}
+      {{ directory_path }}
+  <div class="container mt-5">
+    <!-- Progress Bar -->
+    <ul id="progressbar" class="d-flex justify-content-between">
+      <li class="active" id="step1Indicator">Select Form</li>
+      <li id="step2Indicator">Personal Info</li>
+      <li id="step3Indicator">Form Specific</li>
+      <li id="step4Indicator">Review</li>
+    </ul>
 
-        <!-- Form Content -->
-        <div class="container mt-5">
-            <ul id="progressbar" class="d-flex justify-content-between">
-                <li class="active" id="step1Indicator">Select Form</li>
-                <li id="step2Indicator">Personal Info</li>
-                <li id="step3Indicator">Form Specific</li>
-                <li id="step4Indicator">Review</li>
-            </ul>
-            <form id="formSelection" novalidate>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>Form Builder</h3>
-                        <div class="form-group">
-                            <fieldset>
-                                <legend>Select the forms you want</legend>
-                                <div id="formAlert" class="form-alert hidden">Please select at least one form.</div>
-                                <label class="chip-wrapper">
-                                    <input type="checkbox" name="document_types" value="poa" class="chip">
-                                    <span class="chip-label">Power of Attorney</span>
-                                </label>
-                                <label class="chip-wrapper">
-                                    <input type="checkbox" name="document_types" value="will" class="chip">
-                                    <span class="chip-label">Last Will and Testament</span>
-                                </label>
-                                <label class="chip-wrapper">
-                                    <input type="checkbox" name="document_types" value="living" class="chip">
-                                    <span class="chip-label">Living Will</span>
-                                </label>
-                            </fieldset>
-                            <div id="agent-question" style="display:none;">
-                                <p>Use the same agent for both forms?</p>
-                                <label><input type="radio" name="sameAgent" value="true" required> Yes</label>
-                                <label><input type="radio" name="sameAgent" value="false" required> No</label>
-                            </div>
-                            <label>Signing date: <input type="date" name="date" /></label>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit" disabled>Start forms</button>
-                    </div>
+    <!-- Step 1: Form Selection -->
+    <form id="formSelection" novalidate>
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Form Builder</h3>
+          <div class="form-group">
+            <div class="form-check form-option">
+                <fieldset>
+                  <legend>Select the forms you want</legend>
+                    <div id="formAlert" class="form-alert hidden">Please select at least one form.</div>
+                    
+                    
+                  <label class="chip-wrapper">
+                    <input type="checkbox" name="document_types" value="poa" class="chip">
+                    <span class="chip-label">Power of Attorney</span>
+                  </label>
+
+                  <label class="chip-wrapper">
+                    <input type="checkbox" name="document_types" value="will" class="chip">
+                    <span class="chip-label">Last Will and Testament</span>
+                  </label>
+
+                  <label class="chip-wrapper">
+                    <input type="checkbox" name="document_types" value="living" class="chip">
+                    <span class="chip-label">Living Will</span>
+                  </label>
+                </fieldset>
+                <div id="agent-question" style="display:none;">
+                  <p>Use the same agent for both forms?</p>
+                  <label><input type="radio" name="sameAgent" value=true required> Yes</label>
+                  <label><input type="radio" name="sameAgent" value=false required> No</label>
                 </div>
-            </form>
-            <form id="dynamicForm" style="display:none;"></form>
-            <div id="result" class="mt-4"></div>
-        </div>
+                <label>Signing date: <input type="date" name="date" /></label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-submit" disabled >Start forms</button>
+          </div>
+      </div>
+    </form>
+
+    <!-- Step 2+: Dynamic Inputs -->
+    <form id="dynamicForm" style="display:none;"></form>
+
+    <!-- Results -->
+    <div id="result" class="mt-4"></div>
+  </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/static/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 </body>
+
 </html>
+{% endblock %}
