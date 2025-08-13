@@ -1,13 +1,15 @@
 from django.shortcuts import render
 import os
+from .models import Greeting
+
 # Create your views here.
 
-
+"""
 def index(request):
     return render(request, "index.html")
+"""
 
-
-"""def db(request):
+def db(request):
     # If you encounter errors visiting the `/db/` page on the example app, check that:
     #
     # When running the app on Heroku:
@@ -23,9 +25,10 @@ def index(request):
 
     greetings = Greeting.objects.all()
 
-    return render(request, "db.html", {"greetings": greetings})"""
+    return render(request, "db.html", {"greetings": greetings})
 
-"""
+import os
+
 def index(request):
     # Specify the directory path (e.g., current directory or a specific path)
     directory_path = '.'  # Current directory; replace with desired path, e.g., 'static'
@@ -48,4 +51,3 @@ def index(request):
     }
     return render(request, "index.html")
 
-"""
