@@ -1,6 +1,5 @@
 from django.shortcuts import render
-
-from .models import Greeting
+import os
 
 # Create your views here.
 
@@ -27,8 +26,6 @@ def db(request):
 
     return render(request, "db.html", {"greetings": greetings})
 
-import os
-from django.shortcuts import render
 
 def index(request):
     # Specify the directory path (e.g., current directory or a specific path)
@@ -50,5 +47,5 @@ def index(request):
         'files': files_only,
         'dirs': dirs_only,
     }
-    return render(request, 'index.html', context)
+    return render(request, "index.html")
 
