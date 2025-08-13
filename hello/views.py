@@ -2,10 +2,10 @@ from django.shortcuts import render
 import os
 # Create your views here.
 
-"""
+
 def index(request):
     return render(request, "index.html")
-"""
+
 
 """def db(request):
     # If you encounter errors visiting the `/db/` page on the example app, check that:
@@ -25,7 +25,7 @@ def index(request):
 
     return render(request, "db.html", {"greetings": greetings})"""
 
-
+"""
 def index(request):
     # Specify the directory path (e.g., current directory or a specific path)
     directory_path = '.'  # Current directory; replace with desired path, e.g., 'static'
@@ -48,3 +48,4 @@ def index(request):
     }
     return render(request, "index.html")
 
+"""
