@@ -1,6 +1,5 @@
 from django.shortcuts import render
 import os
-from .models import Greeting
 
 # Create your views here.
 
@@ -27,7 +26,6 @@ def db(request):
 
     return render(request, "db.html", {"greetings": greetings})
 
-import os
 
 def index(request):
     # Specify the directory path (e.g., current directory or a specific path)

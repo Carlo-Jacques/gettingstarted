@@ -15,8 +15,8 @@
     <meta name="theme-color" content="#000000">
     <title>{% block title %}{{ title }} | GitHub Codespaces ♥️ Django{% endblock %}</title>
     
-    <link rel="stylesheet" href="/gettingstarted/static/css/style.css">
-    <link rel="stylesheet" href="/hello/style/style.scss">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -29,8 +29,7 @@
 </head>
 
 <body>
-    <div>
-      {{ directory_path }}
+  <div>
   <div class="container mt-5">
     <!-- Progress Bar -->
     <ul id="progressbar" class="d-flex justify-content-between">
