@@ -1,6 +1,5 @@
 from django.shortcuts import render
 import os
-
 # Create your views here.
 
 """
@@ -8,7 +7,7 @@ def index(request):
     return render(request, "index.html")
 """
 
-def db(request):
+"""def db(request):
     # If you encounter errors visiting the `/db/` page on the example app, check that:
     #
     # When running the app on Heroku:
@@ -24,7 +23,7 @@ def db(request):
 
     greetings = Greeting.objects.all()
 
-    return render(request, "db.html", {"greetings": greetings})
+    return render(request, "db.html", {"greetings": greetings})"""
 
 
 def index(request):
