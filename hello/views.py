@@ -164,7 +164,7 @@ def generate_docs(request):
                 "{{SIGNING_DATE}}": data.get("date", "")
             })
             generate_docx(
-                template="Template_Power of Attorney.docx",
+                template="/none.docx",
                 output_name=f"POA_{first_name}_{last_name}.docx",
                 mapping=poa_replacements,
                 output_list=generated_files
@@ -202,7 +202,7 @@ def generate_docs(request):
                 "{{DATE}}": data.get("date", "")
             })
             generate_docx(
-                template="Template_Last Will & Testament.docx",
+                template="Template_Last_Will_Testament.docx",
                 output_name=f"WILL_{first_name}_{last_name}.docx",
                 mapping=will_replacements,
                 output_list=generated_files
