@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 def index(request):
     return render(request, "index.html")
 """
-
+"""
 def db(request):
     # If you encounter errors visiting the `/db/` page on the example app, check that:
     #
@@ -31,7 +31,7 @@ def db(request):
 
     greetings = Greeting.objects.all()
 
-    return render(request, "db.html", {"greetings": greetings})
+    return render(request, "db.html", {"greetings": greetings})"""
 
 
 def index(request):
@@ -69,7 +69,7 @@ def generate_docs(request):
         #    return JsonResponse({'error': 'Email address is required'}, status=400)
 
         generated_files = []
-        output_dir = '/tmp/generated_docs'
+        output_dir = '/generated_docs'
 
         # Unique subdirectory per request
         request_id = str(os.urandom(8).hex())
@@ -164,7 +164,7 @@ def generate_docs(request):
                 "{{SIGNING_DATE}}": data.get("date", "")
             })
             generate_docx(
-                template="/none.docx",
+                template="Template_Last_Will_Testament.docx",
                 output_name=f"POA__{first_name}_{last_name}_{timestamp}.docx",
                 mapping=poa_replacements,
                 output_list=generated_files
