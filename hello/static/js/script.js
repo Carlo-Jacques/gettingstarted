@@ -734,13 +734,12 @@ $(document).ready(function() {
       console.log(payload);
 
       $.ajax({
-          url: '/test_ajax/', // Changed from '/hello/generate.php'
+        url: '/generate_docs/',
           method: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(payload),
           success: function(response) {
-              $('#result').html(`<p style="color:green;">Test Success: ${response.message}</p>`);
-              console.log('Received data:', response.received_data);
+              $('#result').html(response.html);
           },
           error: function(xhr, status, error) {
               $('#result').html(`<p style="color:red;">Error: ${error}</p>`);
