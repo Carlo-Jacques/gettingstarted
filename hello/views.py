@@ -1,5 +1,8 @@
 from django.shortcuts import render
 import os
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -49,3 +52,26 @@ def index(request):
     }
     return render(request, "index.html")
 
+
+
+
+@csrf_exempt
+def test_ajax(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid method'}, status=400)
+
+    try:
+        # Parse JSON payload
+        data = json.loads(request.body)
+        # Log payload for debugging
+        with open('/tmp/test_ajax_log.txt', 'a') as log:
+            log.write(f"Received payload: {json.dumps(data, indent=2)}\n")
+        
+        # Return success response
+        return JsonResponse({
+            'success': True,
+            'message': 'Test AJAX request received',
+            'received_data': data
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

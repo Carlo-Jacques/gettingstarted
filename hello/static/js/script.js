@@ -641,7 +641,7 @@ $(document).ready(function() {
     });
     
 
-    $('#dynamicForm').off('submit').on('submit', function(e) {
+    `$('#dynamicForm').off('submit').on('submit', function(e) {
         e.preventDefault();
 
         const clone = $('#dynamicForm').clone();
@@ -693,5 +693,58 @@ $(document).ready(function() {
                 $('#result').html("<p style='color:red;'>Error: " + error + "</p>");
             }
         });
-    });
+    });`
+
+    $('#dynamicForm').off('submit').on('submit', function(e) {
+      e.preventDefault();
+
+      const clone = $('#dynamicForm').clone();
+      clone.find('.step').show();
+      const formData = clone.serializeArray();
+
+      const payload = {};
+      formData.forEach(field => {
+          payload[field.name] = field.value;
+      });
+
+      const gendered = getGenderTerms(payload.sex);
+      Object.assign(payload, gendered); 
+
+      const childNames = [];
+      formData.forEach(field => {
+          if (field.name.startsWith("child_") && field.value.trim() !== "") {
+              childNames.push(field.value.trim());
+          }
+      });
+      payload["CHILDREN"] = formatChildrenList(childNames);
+      payload["date"] = $('input[name="date"]').val();
+
+      if (payload["date"]) {
+          const [year, month, day] = payload["date"].split("-");
+          payload["day"] = day;
+          payload["month"] = getMonthName(month);
+          payload["year"] = year;
+      }
+
+      payload["document_types"] = $('input[name="document_types"]:checked')
+          .map(function() {
+              return this.value;
+          }).get();
+
+      console.log(payload);
+
+      $.ajax({
+          url: '/test_ajax/', // Changed from '/hello/generate.php'
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(payload),
+          success: function(response) {
+              $('#result').html(`<p style="color:green;">Test Success: ${response.message}</p>`);
+              console.log('Received data:', response.received_data);
+          },
+          error: function(xhr, status, error) {
+              $('#result').html(`<p style="color:red;">Error: ${error}</p>`);
+          }
+      });
+  });
 });
