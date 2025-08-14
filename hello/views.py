@@ -1,6 +1,6 @@
 import os
 import json
-from docx import Document
+from docx import Document # pyright: ignore[reportMissingImports]
 from datetime import datetime  # Added for timestamp
 from django.conf import settings
 from django.shortcuts import render
