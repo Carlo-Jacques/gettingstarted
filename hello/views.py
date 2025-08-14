@@ -165,7 +165,7 @@ def generate_docs(request):
             })
             generate_docx(
                 template="/none.docx",
-                output_name=f"POA_{first_name}_{last_name}.docx",
+                output_name=f"POA__{first_name}_{last_name}_{timestamp}.docx",
                 mapping=poa_replacements,
                 output_list=generated_files
             )
@@ -203,7 +203,7 @@ def generate_docs(request):
             })
             generate_docx(
                 template="Template_Last_Will_Testament.docx",
-                output_name=f"WILL_{first_name}_{last_name}.docx",
+                output_name=f"WILL_{first_name}_{last_name}_{timestamp}.docx",
                 mapping=will_replacements,
                 output_list=generated_files
             )
@@ -260,7 +260,7 @@ def generate_docs(request):
             })
             generate_docx(
                 template="Template_Living_Will.docx",
-                output_name=f"Living_Will_{first_name}_{last_name}.docx",
+                output_name=f"Living_Will_{first_name}_{last_name}_{timestamp}.docx",
                 mapping=living_replacements,
                 output_list=generated_files
             )
