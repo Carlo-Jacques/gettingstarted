@@ -59,6 +59,14 @@ def index(request):
 
 @csrf_exempt
 def generate_docs(request):
+
+    # Early logging to confirm view is reached
+    try:
+        with open('/tmp/early_debug_log.txt', 'a') as log:
+            log.write(f"== generate_docs called at {datetime.now()} ==\n")
+    except Exception as e:
+        return JsonResponse({'error': f'Failed to write early debug log: {str(e)}'}, status=500)
+    
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=400)
 
