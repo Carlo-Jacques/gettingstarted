@@ -732,25 +732,18 @@ $(document).ready(function() {
           }).get();
 
       console.log(payload);
-      
-      function getCookie(name){
-        const m = document.cookie.match('(?:^|; )'+name+'=([^;]*)');
-        return m ? decodeURIComponent(m[1]) : null;
-      }
 
       $.ajax({
-        url: "{% url 'generate_docs' %}",     // <-- matches urls.py
-        method: "POST",
-        contentType: "application/json",
-        dataType: "json",
-        data: JSON.stringify(payload),
-        success: function(response){
-          $("#result").html(response.html);
-        },
-        error: function(xhr){
-          const msg = xhr.responseJSON?.error || xhr.statusText || "Request failed";
-          $("#result").html(`<p style="color:red;">Error: ${msg}</p>`);
-        }
+        url: '/generate_docs/',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(payload),
+          success: function(response) {
+              $('#result').html(response.html);
+          },
+          error: function(xhr, status, error) {
+              $('#result').html(`<p style="color:red;">Error: ${error}</p>`);
+          }
       });
   });
 });
