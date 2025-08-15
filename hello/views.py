@@ -8,29 +8,58 @@ from django.http import JsonResponse
 from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
 
-import os
-import json
-import traceback
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import EmailMessage
-from django.conf import settings
-from django.shortcuts import render
-from docx import Document # pyright: ignore[reportMissingImports]
-from datetime import datetime
+
+# Create your views here.
+
+"""
+def index(request):
+    return render(request, "index.html")
+"""
+"""
+def db(request):
+    # If you encounter errors visiting the `/db/` page on the example app, check that:
+    #
+    # When running the app on Heroku:
+    #   1. You have added the Postgres database to your app.
+    #   2. You have uncommented the `psycopg` dependency in `requirements.txt`, and the `release`
+    #      process entry in `Procfile`, git committed your changes and re-deployed the app.
+    #
+    # When running the app locally:
+    #   1. You have run `./manage.py migrate` to create the `hello_greeting` database table.
+
+    greeting = Greeting()
+    greeting.save()
+
+    greetings = Greeting.objects.all()
+
+    return render(request, "db.html", {"greetings": greetings})"""
+
+
+def index(request):
+    # Specify the directory path (e.g., current directory or a specific path)
+    directory_path = '.'  # Current directory; replace with desired path, e.g., 'static'
+    try:
+        # List directory contents
+        directory_contents = os.listdir(directory_path)
+        # Filter out '.' and '..' (similar to PHP's condition)
+        files = [f for f in directory_contents if f not in ['.', '..']]
+        # Optionally separate files and directories
+        files_only = [f for f in files if os.path.isfile(os.path.join(directory_path, f))]
+        dirs_only = [f for f in files if os.path.isdir(os.path.join(directory_path, f))]
+    except Exception as e:
+        files_only = []
+        dirs_only = [str(e)]  # Handle errors (e.g., permission denied)
+
+    context = {
+        'directory_path': directory_path,
+        'files': files_only,
+        'dirs': dirs_only,
+    }
+    return render(request, "index.html")
+
 
 @csrf_exempt
 def generate_docs(request):
-    # Early logging to confirm view is reached
-    debug_dir = os.path.join(settings.BASE_DIR, 'generated_docs')
-    os.makedirs(debug_dir, exist_ok=True)
-    early_log_path = os.path.join(debug_dir, 'early_debug_log.txt')
-    try:
-        with open(early_log_path, 'a') as log:
-            log.write(f"== generate_docs called at {datetime.now()} ==\n")
-    except Exception as e:
-        return JsonResponse({'error': f'Failed to write early debug log: {str(e)}'}, status=500)
-
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=400)
 
@@ -44,33 +73,17 @@ def generate_docs(request):
         if not data.get('email'):
             return JsonResponse({'error': 'Email address is required'}, status=400)
 
+        # Store generated files in memory
         generated_files = []
-        output_dir = os.path.join(settings.BASE_DIR, 'generated_docs')
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Unique subdirectory per request
-        request_id = str(os.urandom(8).hex())
-        user_output_dir = os.path.join(output_dir, request_id)
-        os.makedirs(user_output_dir, exist_ok=True)
-
-        # Log payload for debugging
-        debug_log_path = os.path.join(user_output_dir, 'debug_log.txt')
-        with open(debug_log_path, 'a') as log:
-            log.write(f"== Django view started (Request ID: {request_id}, {datetime.now()}) ==\n")
-            log.write(f"Received payload: {json.dumps(data, indent=2)}\n\n")
-            log.write(f"BASE_DIR: {settings.BASE_DIR}\n")
-            log.write(f"Template dir: {os.path.join(settings.BASE_DIR, 'hello', 'template_docs')}\n")
 
         # Generate timestamp for filenames
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 
-        # Generate docx function
-        def generate_docx(template, output_name, mapping, output_list):
+        # Generate docx function (in memory)
+        def generate_docx(template, output_name, mapping):
             template_path = os.path.join(settings.BASE_DIR, 'hello', 'template_docs', template)
             if not os.path.exists(template_path):
-                with open(debug_log_path, 'a') as log:
-                    log.write(f"Template not found: {template_path}\n")
-                return False
+                return None, f"Template not found: {template_path}"
             try:
                 doc = Document(template_path)
                 def replace_text_preserving_format(paragraphs, mapping):
@@ -89,14 +102,13 @@ def generate_docs(request):
                     for row in table.rows:
                         for cell in row.cells:
                             replace_text_preserving_format(cell.paragraphs, mapping)
-                output_path = os.path.join(user_output_dir, output_name)
-                doc.save(output_path)
-                output_list.append(output_path)
-                return True
+                # Save to in-memory buffer
+                buffer = io.BytesIO()
+                doc.save(buffer)
+                buffer.seek(0)
+                return buffer, output_name
             except Exception as e:
-                with open(debug_log_path, 'a') as log:
-                    log.write(f"Error generating {output_name}: {str(e)}\n{traceback.format_exc()}\n")
-                return False
+                return None, f"Error generating {output_name}: {str(e)}"
 
         # Normalize document_types
         doc_type = data.get("document_types", [])
@@ -151,17 +163,15 @@ def generate_docs(request):
                 "{{Signing_Date}}": data.get("date", ""),
                 "{{DATE}}": data.get("date", "")
             })
-            if generate_docx(
+            buffer, result = generate_docx(
                 template="Template_Last Will & Testament.docx",
                 output_name=f"WILL_{first_name}_{last_name}_{timestamp}.docx",
-                mapping=will_replacements,
-                output_list=generated_files
-            ):
-                with open(debug_log_path, 'a') as log:
-                    log.write("Generated Will doc\n")
+                mapping=will_replacements
+            )
+            if buffer:
+                generated_files.append((buffer, result))
             else:
-                with open(debug_log_path, 'a') as log:
-                    log.write("Failed to generate Will doc\n")
+                return JsonResponse({'error': result}, status=500)
 
         # Living Will
         def format_living_choice(initials_key, check_key, label):
@@ -211,17 +221,15 @@ def generate_docs(request):
                 "{{LW_FOOD_WATER_IV}}": living_food_water,
                 "{{LW_LIFE_SUSTAINING}}": living_life_sustaining
             })
-            if generate_docx(
+            buffer, result = generate_docx(
                 template="Template_Living_Will.docx",
                 output_name=f"Living_Will_{first_name}_{last_name}_{timestamp}.docx",
-                mapping=living_replacements,
-                output_list=generated_files
-            ):
-                with open(debug_log_path, 'a') as log:
-                    log.write("Generated Living Will doc\n")
+                mapping=living_replacements
+            )
+            if buffer:
+                generated_files.append((buffer, result))
             else:
-                with open(debug_log_path, 'a') as log:
-                    log.write("Failed to generate Living Will doc\n")
+                return JsonResponse({'error': result}, status=500)
 
         if not generated_files:
             return JsonResponse({'error': 'No documents were generated'}, status=400)
@@ -234,41 +242,16 @@ def generate_docs(request):
                 from_email=settings.EMAIL_HOST_USER,
                 to=[data['email']]
             )
-            for file_path in generated_files:
-                with open(file_path, 'rb') as f:
-                    email.attach(os.path.basename(file_path), f.read(), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            for buffer, filename in generated_files:
+                email.attach(filename, buffer.read(), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
             email.send()
-            with open(debug_log_path, 'a') as log:
-                log.write("Email sent successfully\n")
         except Exception as e:
-            with open(debug_log_path, 'a') as log:
-                log.write(f"Email sending failed: {str(e)}\n{traceback.format_exc()}\n")
             return JsonResponse({'error': f'Failed to send email: {str(e)}'}, status=500)
 
-        # Log generated files
-        with open(debug_log_path, 'a') as log:
-            log.write("Generated files:\n")
-            for path in generated_files:
-                log.write(f" - {path}\n")
-
-        # Clean up files to avoid clutter
-        for file_path in generated_files:
-            if os.path.exists(file_path):
-                os.remove(file_path)
-        if os.path.exists(user_output_dir):
-            try:
-                os.rmdir(user_output_dir)
-            except OSError:
-                pass
-
-        # Return download links
-        response = ''.join([f"<p><a href='{f}' download>Download {os.path.basename(f)}</a></p>" for f in generated_files])
+        # Return download links (optional, since files are emailed)
+        response = ''.join([f"<p>Document {filename} sent to {data['email']}</p>" for _, filename in generated_files])
         return JsonResponse({'success': True, 'html': response})
 
     except Exception as e:
-        with open(debug_log_path, 'a') as log:
-            log.write(f"Error: {str(e)}\n{traceback.format_exc()}\n")
         return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 
-def index(request):
-    return render(request, 'index.html')
