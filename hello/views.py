@@ -44,4 +44,4 @@ def index(request):
     else:
         form = EmailForm()
 
-    return render(request, "index.html", {'form': form})
+    return render(request, "index.html")
