@@ -20,7 +20,7 @@ from django.urls import path, include
 # Removed: import hello.views (you shouldn't import views directly at the project level if you're using include)
 
 urlpatterns = [
-    path('admin/', admin.site.urls), # Always include the admin URL
+    #path('admin/', admin.site.urls), # Always include the admin URL
     path('', include('hello.urls')),  # Include your 'hello' app's URLs at the project root
                                     # This will direct requests to 'hello/urls.py'
                                     # Remove duplicate or conflicting paths for the root URL
