@@ -22,6 +22,7 @@ import hello.views
 
 urlpatterns = [
     path("", hello.views.index, name="index"),
-    path("/generate_docs", hello.views.generate_docs, name="generate_docs"),
+    path("generate_docs/", hello.views.generate_docs, name="generate_docs"),  # <-- match AJAX
+
 ]
 

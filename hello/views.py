@@ -11,11 +11,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
-
-"""
-def index(request):
-    return render(request, "index.html")
-"""
 """
 def db(request):
     # If you encounter errors visiting the `/db/` page on the example app, check that:
@@ -59,7 +54,7 @@ def index(request):
     return render(request, "index.html")
 
 
-@csrf_exempt
+#@csrf_exempt
 def generate_docs(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=400)
@@ -82,7 +77,8 @@ def generate_docs(request):
 
         # Generate docx function (in memory)
         def generate_docx(template, output_name, mapping):
-            template_path = os.path.join(settings.BASE_DIR, 'hello', 'template_docs', template)
+            template_path = settings.BASE_DIR / "hello" / "template_docs" / template
+
             if not os.path.exists(template_path):
                 return None, f"Template not found: {template_path}"
             try:

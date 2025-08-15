@@ -39,7 +39,8 @@
     </ul>
 
     <!-- Step 1: Form Selection -->
-    <form id="formSelection" novalidate>
+    <form "{% url 'generated_docs' %}" id="formSelection" novalidate>
+      {% csrf_token %}
       <div class="row">
         <div class="col-md-12">
           <h3>Form Builder</h3>
