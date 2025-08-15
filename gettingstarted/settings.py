@@ -120,10 +120,11 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://form-filler-e7d92ad055eb.herokuapp.com",
+    "https://gettingstarted-git-391138574ec7.herokuapp.com/",
     # plus your codespaces preview like:
-    f"https://{cs_name}-8000.{cs_domain}",
+    #f"https://{cs_name}-8000.{cs_domain}",
 ]
+
 ROOT_URLCONF = "hello.urls"
 
 TEMPLATES = [
