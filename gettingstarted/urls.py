@@ -25,9 +25,6 @@ urlpatterns = [
     #path("generate_docs/", hello.views.generate_docs, name="generate_docs"),
     #path("/hello/generate_docs/", hello.views.generate_docs, name="generate_docs"),
     #path("/generate_docs/", hello.views.generate_docs, name="generate_docs"),
-
-
     path("/hello/send-email/", hello.views.send_email, name="send_email"),
-
 ]
 

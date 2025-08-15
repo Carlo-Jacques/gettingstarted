@@ -35,7 +35,6 @@
     {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
 
     <form action="{% url 'send_email' %}" method="post" id="formSelection" novalidate>
-    {% csrf_token %}
     <input type="email" name="email" placeholder="you@example.com" required>
     <input type="text" name="subject" placeholder="Subject">
     <!-- add your other inputs -->
