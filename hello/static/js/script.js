@@ -733,17 +733,26 @@ $(document).ready(function() {
 
       console.log(payload);
 
-      $.ajax({
-        url: '/generate_docs/',
-          method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify(payload),
-          success: function(response) {
-              $('#result').html(response.html);
-          },
-          error: function(xhr, status, error) {
-              $('#result').html(`<p style="color:red;">Error: ${error}</p>`);
-          }
-      });
+    document.getElementById("formSelection").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const formData = new URLSearchParams(new FormData(form));
+
+  try {
+    const resp = await fetch("{% url 'send_email' %}", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: formData.toString(),
+    });
+
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) throw new Error(data.error || resp.statusText);
+    document.getElementById("result").innerHTML = "<p style='color:green;'>Email sent!</p>";
+  } catch (err) {
+    document.getElementById("result").innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+  }
+});
+
+      
   });
 });
