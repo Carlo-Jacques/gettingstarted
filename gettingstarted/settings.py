@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     "hello",
 ]
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     # Django doesn't support serving static assets in a production-ready way, so we use the
@@ -118,6 +119,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://form-filler-e7d92ad055eb.herokuapp.com",
+    # plus your codespaces preview like:
+    f"https://{cs_name}-8000.{cs_domain}",
+]
 ROOT_URLCONF = "hello.urls"
 
 TEMPLATES = [
