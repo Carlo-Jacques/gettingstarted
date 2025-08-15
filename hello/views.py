@@ -1,86 +1,42 @@
-import json
-import smtplib
-import email.utils
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from os import environ
-
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+import os
+from django.conf import settings
+from django.core.mail import send_mail
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
 
-@require_POST
+def index(request):
+    # Specify the directory path (e.g., current directory or a specific path)
+    directory_path = '.'  # Current directory; replace with desired path, e.g., 'static'
+    try:
+        # List directory contents
+        directory_contents = os.listdir(directory_path)
+        # Filter out '.' and '..' (similar to PHP's condition)
+        files = [f for f in directory_contents if f not in ['.', '..']]
+        # Optionally separate files and directories
+        files_only = [f for f in files if os.path.isfile(os.path.join(directory_path, f))]
+        dirs_only = [f for f in files if os.path.isdir(os.path.join(directory_path, f))]
+    except Exception as e:
+        files_only = []
+        dirs_only = [str(e)]  # Handle errors (e.g., permission denied)
+
+    context = {
+        'directory_path': directory_path,
+        'files': files_only,
+        'dirs': dirs_only,
+    }
+    return render(request, "index.html")
+
+@require_http_methods(["POST"])
 @csrf_exempt
 def send_email(request):
-    """
-    Accepts POST from #formSelection (form-encoded or JSON),
-    and sends an email via Mailer To Go using smtplib.
-    """
+    to_email = request.POST.get("email")
+    subject = request.POST.get("subject", "Form submission")
+    body = "New submission:\n\n" + "\n".join(f"{k}: {v}" for k, v in request.POST.items())
 
-    # Accept either JSON or x-www-form-urlencoded
-    if request.content_type and request.content_type.startswith("application/json"):
-        try:
-            data = json.loads(request.body.decode("utf-8"))
-        except json.JSONDecodeError:
-            return JsonResponse({"ok": False, "error": "Invalid JSON"}, status=400)
-    else:
-        data = request.POST.dict()
+    if not to_email:
+        return render(request, "index.html", {"error": "Email is required."}, status=400)
 
-    # --- Mailer To Go env vars ---
-    host = environ.get("MAILERTOGO_SMTP_HOST")
-    port = int(environ.get("MAILERTOGO_SMTP_PORT", 587))
-    user = environ.get("MAILERTOGO_SMTP_USER")
-    password = environ.get("MAILERTOGO_SMTP_PASSWORD")
-    domain = environ.get("MAILERTOGO_DOMAIN", "example.com")
-
-    if not all([host, user, password]):
-        return JsonResponse(
-            {"ok": False, "error": "Mailer To Go SMTP env vars are not set"},
-            status=500,
-        )
-
-    # Sender/recipient
-    # You can send to yourself, or to the form's email, or both.
-    sender_name = "Form Filler"
-    sender_email = f"noreply@{domain}"
-
-    # Send to the submitter if provided, otherwise to yourself
-    to_email = data.get("email") or sender_email
-    to_name = data.get("name") or "Recipient"
-
-    # Subject & body
-    subject = data.get("subject") or "Form Submission"
-    # Build a simple body from all submitted fields
-    lines = [f"{k}: {v}" for k, v in sorted(data.items())]
-    body_plain = "New submission:\n\n" + "\n".join(lines) + "\n"
-
-    body_html = "<html><body><h3>New submission</h3><ul>"
-    body_html += "".join(f"<li><b>{k}</b>: {v}</li>" for k, v in sorted(data.items()))
-    body_html += "</ul></body></html>"
-
-    # MIME message (plain + html)
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = email.utils.formataddr((sender_name, sender_email))
-    msg["To"] = email.utils.formataddr((to_name, to_email))
-
-    # Optional: also send yourself a copy
-    # msg["Bcc"] = sender_email
-
-    part1 = MIMEText(body_plain, "plain")
-    part2 = MIMEText(body_html, "html")
-    msg.attach(part1)
-    msg.attach(part2)
-
-    # Send
-    try:
-        with smtplib.SMTP(host, port, timeout=20) as server:
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(user, password)
-            server.sendmail(sender_email, [to_email], msg.as_string())
-        return JsonResponse({"ok": True, "message": "Email sent!"})
-    except Exception as e:
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [to_email], fail_silently=False)
+    return render(request, "success.html", {"email": to_email})
