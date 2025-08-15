@@ -7,40 +7,39 @@
 
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="GitHub Codespaces ♥️ Django">
-    <meta name="author" content="GitHub Codespaces">
-    <meta name="generator" content="GitHub Codespaces">
-    <meta name="theme-color" content="#000000">
-    <title>{% block title %}{{ title }} | GitHub Codespaces ♥️ Django{% endblock %}</title>
-    
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- FontAwesome & Bootstrap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Correct order -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-     
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
-
 <body>
-  <div>
-    <!-- templates/index.html -->
-    {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+    <h1>Welcome to Getting Started!</h1>
 
-    <form method="post" id="formSelection" novalidate>
-    
-    <input type="email" name="email" placeholder="you@example.com" required>
-    <input type="text" name="subject" placeholder="Subject">
-    <!-- add your other inputs -->
-    <button type="submit">Submit</button>
+    <!-- Display Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Submit Your Email</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Email</button>
     </form>
-    </div>
+
+    <p>This is your home page.</p>
+    <p><a href="{% url 'success' %}">Go to About page</a></p>
+</body>
  </html>
 {% endblock %}   

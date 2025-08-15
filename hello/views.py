@@ -2,6 +2,8 @@ import os
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
+from .forms import EmailForm  # Import the form you created
+from django.contrib import messages # Import the messages framework
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
@@ -26,16 +28,19 @@ def index(request):
         'files': files_only,
         'dirs': dirs_only,
     }
-    return render(request, "index.html")
 
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            email_address = form.cleaned_data['email']
+            # Here's where you'd "do something" with the email
+            # For example, save it to a database, send an email, etc.
+            print(f"Processing email: {email_address}")  # For demonstration
 
-@require_http_methods(["POST"])
-@csrf_protect
-def send_email(request):
-    to_email = request.POST.get("email")
-    if not to_email:
-        return render(request, "index.html", {"error": "Email is required."}, status=400)
-    subject = request.POST.get("subject", "Form submission")
-    body = "New submission:\n\n" + "\n".join(f"{k}: {v}" for k, v in request.POST.items())
-    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [to_email], fail_silently=False)
-    return render(request, "success.html", {"email": to_email})
+            messages.success(request, f'Email "{email_address}" received successfully!')
+            # Clear the form by creating a new empty instance
+            form = EmailForm()
+    else:
+        form = EmailForm()
+
+    return render(request, "index.html", {'form': form})
