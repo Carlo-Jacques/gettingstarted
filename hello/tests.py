@@ -1,4 +1,10 @@
-from django.test import TestCase
+import io
+import json
+from django.test import TestCase, Client
+from django.urls import reverse
+from unittest.mock import patch
+from docx import Document # pyright: ignore[reportMissingImports]
+from hello.views import generate_docs
 
 # Create your tests here.
 
@@ -25,13 +31,7 @@ class ExampleTest(TestCase):
         self.assertEqual(second_response.status_code, 200)
         self.assertEqual(len(second_response.context["greetings"]), 2)
 
-import io
-import json
-from django.test import TestCase, Client
-from django.urls import reverse
-from unittest.mock import patch
-from docx import Document # pyright: ignore[reportMissingImports]
-from hello.views import generate_docs
+
 
 class GenerateDocsTestCase(TestCase):
     def setUp(self):

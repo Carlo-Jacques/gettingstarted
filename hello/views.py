@@ -8,6 +8,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def index(request):
     # Specify the directory path (e.g., current directory or a specific path)
     directory_path = '.'  # Current directory; replace with desired path, e.g., 'static'
