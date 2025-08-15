@@ -743,7 +743,6 @@ $(document).ready(function() {
         method: "POST",
         contentType: "application/json",
         dataType: "json",
-        headers: { "X-CSRFToken": getCookie("csrftoken") },  // remove if you keep @csrf_exempt
         data: JSON.stringify(payload),
         success: function(response){
           $("#result").html(response.html);
