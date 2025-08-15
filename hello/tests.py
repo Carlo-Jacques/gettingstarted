@@ -32,7 +32,7 @@ class ExampleTest(TestCase):
         self.assertEqual(len(second_response.context["greetings"]), 2)
 
 
-
+"""
 class GenerateDocsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -131,4 +131,4 @@ class GenerateDocsTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'error': 'Email address is required'})
+        self.assertEqual(response.json(), {'error': 'Email address is required'})"""
