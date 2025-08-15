@@ -1,16 +1,37 @@
-from email.message import EmailMessage
 import os
-from django.conf import settings
+import io
 import json
-from django.core.mail import send_mail
-from django.http import JsonResponse
+from docx import Document # pyright: ignore[reportMissingImports]
+from datetime import datetime  # Added for timestamp
+from django.conf import settings
 from django.shortcuts import render
-from .forms import EmailForm  # Import the form you created
-from django.contrib import messages # Import the messages framework
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect
 
+
+# Create your views here.
+
+"""
+def db(request):
+    # If you encounter errors visiting the `/db/` page on the example app, check that:
+    #
+    # When running the app on Heroku:
+    #   1. You have added the Postgres database to your app.
+    #   2. You have uncommented the `psycopg` dependency in `requirements.txt`, and the `release`
+    #      process entry in `Procfile`, git committed your changes and re-deployed the app.
+    #
+    # When running the app locally:
+    #   1. You have run `./manage.py migrate` to create the `hello_greeting` database table.
+
+    greeting = Greeting()
+    greeting.save()
+
+    greetings = Greeting.objects.all()
+
+    return render(request, "db.html", {"greetings": greetings})"""
 
 
 def index(request):
@@ -234,6 +255,7 @@ def generate_docs(request):
         return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 """
 @csrf_exempt
+@require_POST
 @csrf_protect
 def send_email(request):
     """
