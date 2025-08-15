@@ -23,7 +23,7 @@ import hello.views
 urlpatterns = [
     path("", hello.views.index, name="index"),
     path('success/', hello.views.success, name='success'),
-    path('', include('hello.urls')), # Include your 'hello' app's URLs at the project root
+    #path('', include('hello.urls')), # Include your 'hello' app's URLs at the project root
 
     #path("generate_docs/", hello.views.generate_docs, name="generate_docs"),
     #path("/hello/generate_docs/", hello.views.generate_docs, name="generate_docs"),
