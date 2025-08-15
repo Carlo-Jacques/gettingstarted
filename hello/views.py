@@ -1,4 +1,5 @@
 import os
+import io
 import json
 from docx import Document # pyright: ignore[reportMissingImports]
 from datetime import datetime  # Added for timestamp
@@ -254,4 +255,3 @@ def generate_docs(request):
 
     except Exception as e:
         return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
-
