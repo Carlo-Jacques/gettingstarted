@@ -739,7 +739,7 @@ $(document).ready(function() {
   const formData = new URLSearchParams(new FormData(form));
 
   try {
-    const resp = await fetch("{% url 'send_email' %}", {
+    const resp = await fetch("{% url 'send-email' %}", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
       body: formData.toString(),
