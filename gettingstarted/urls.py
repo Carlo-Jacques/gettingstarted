@@ -16,15 +16,20 @@ Including another URLconf
 """
 
 # from django.contrib import admin
+from django.urls import path, include
+from django.contrib import admin
 from django.urls import path
-
 import hello.views
+
 
 urlpatterns = [
     path("", hello.views.index, name="index"),
+    path('success/', hello.views.about, name='success'),
+    path('', include('hello.urls')), # Include your 'hello' app's URLs at the project root
+
     #path("generate_docs/", hello.views.generate_docs, name="generate_docs"),
     #path("/hello/generate_docs/", hello.views.generate_docs, name="generate_docs"),
     #path("/generate_docs/", hello.views.generate_docs, name="generate_docs"),
-    path("/hello/send-email/", hello.views.send_email, name="send_email"),
-]
+    #path("hello/send-email/", hello.views.send_email, name="send_email"),
 
+]
